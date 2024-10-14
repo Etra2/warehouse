@@ -1,0 +1,130 @@
+/* Styl ogólny dla całej strony */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* Jasnoniebieski kolor tła */
+    margin: 0;
+    padding: 20px;
+}
+
+/* Kontener dla zawartości */
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Styl nagłówka */
+h1 {
+    color: #003366; /* Ciemnoniebieski kolor nagłówka */
+}
+
+/* Styl dla tabeli */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #ffffff; /* Kolor tła tabeli */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styl dla nagłówków tabeli */
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px; /* Zwiększenie przestrzeni w komórkach */
+    text-align: left;
+}
+
+th {
+    background-color: #0066cc; /* Niebieski kolor nagłówków */
+    color: white; /* Biały kolor tekstu nagłówków */
+}
+
+/* Styl dla przycisków */
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #0066cc; /* Kolor przycisków */
+    color: white; /* Biały kolor tekstu */
+    padding: 10px 15px; /* Wewnętrzne marginesy */
+    border-radius: 5px; /* Zaokrąglenie krawędzi */
+    margin-top: 10px; /* Odstęp między przyciskami */
+    transition: background-color 0.3s; /* Płynna zmiana koloru */
+}
+
+.btn:hover {
+    background-color: #004b99; /* Ciemniejszy niebieski przy najechaniu */
+}
+
+/* Styl dla akcji */
+td a {
+    margin-right: 5px; /* Odstęp między przyciskami akcji */
+}
+
+/* Popup */
+.popup {
+    display: none; /* Ukryty domyślnie */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Przezroczyste tło */
+    display: flex; /* Użyj flexbox do centrowania */
+    justify-content: center; /* Wycentrowanie poziome */
+    align-items: center; /* Wycentrowanie pionowe */
+}
+
+.popup-content {
+    background-color: white; /* Białe tło popupu */
+    padding: 20px;
+    border-radius: 4px; /* Zaokrąglenie krawędzi */
+    width: 400px; /* Szerokość popupu */
+    max-width: 80%; /* Maksymalna szerokość */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Cień */
+}
+
+.popup-content h2 {
+    color: #0066cc; /* Kolor nagłówka popupu */
+}
+
+.popup-content label {
+    display: block; /* Blokowy wyświetlacz dla etykiet */
+    margin-bottom: 10px;
+    font-weight: bold; /* Pogrubienie etykiet */
+}
+
+.popup-content input,
+.popup-content textarea {
+    width: 100%; /* Szerokość 100% */
+    padding: 8px; /* Wewnętrzne marginesy */
+    margin-bottom: 20px; /* Odstęp dolny */
+    border: 1px solid #ccc; /* Ramka */
+    border-radius: 4px; /* Zaokrąglenie krawędzi */
+}
+
+/* Styl dla przycisku zamykania */
+.close-btn {
+    position: absolute; /* Pozycjonowanie absolutne dla przycisku zamykania */
+    top: 10px;
+    right: 15px;
+    font-size: 20px; /* Rozmiar czcionki */
+    cursor: pointer; /* Kursor wskazujący */
+    color: #0066cc; /* Kolor przycisku zamykania */
+}
+
+.close-btn:hover {
+    color: #005bb5; /* Ciemniejszy kolor przy najechaniu */
+}
+
+/* Styl dla wierszy tabeli */
+tr:hover {
+    background-color: #f2f2f2; /* Kolor tła wiersza przy najechaniu */
+}
+/* Styl dla przycisku usunięcia */
+.btn-delete {
+    background-color: #900000; /* Czerwony kolor dla przycisku usunięcia */
+}
+
+.btn-delete:hover {
+    background-color: #a60000; /* Ciemniejszy czerwony kolor przy najechaniu */
+}
+

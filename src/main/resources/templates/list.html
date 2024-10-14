@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Produktów</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Lista Produktów</h1>
+
+    <!-- Przycisk otwierający popup do dodania nowego produktu -->
+    <button class="btn" onclick="openPopup()">Dodaj Nowy Produkt</button>
+
+    <!-- Tabela produktów -->
+    <table>
+        <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Opis</th>
+            <th>Cena</th>
+            <th>Ilość</th>
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.description}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.quantity}"></td>
+            <td>
+                <button class="btn" onclick="openEditPricePopup('${product.id}', ${product.price})">Edytuj cenę</button>
+                <button class="btn" onclick="openEditQuantityPopup('${product.id}', ${product.quantity})">Edytuj ilość</button>
+                <button class="btn" onclick="openEditDescriptionPopup('${product.id}', encodeURIComponent('${product.description}'))">Edytuj opis</button>
+                <button class="btn btn-delete" onclick="confirmDelete('${product.id}')">Usuń</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Popup do dodawania nowego produktu -->
+<div class="popup" id="popup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-btn" id="closePopup">&times;</span>
+        <h2>Dodaj Nowy Produkt</h2>
+        <label for="productName">Nazwa:</label>
+        <input type="text" id="productName" required>
+
+        <label for="productDescription">Opis:</label>
+        <textarea id="productDescription" required></textarea>
+
+        <label for="productPrice">Cena:</label>
+        <input type="number" id="productPrice" required>
+
+        <label for="productQuantity">Ilość:</label>
+        <input type="number" id="productQuantity" required>
+
+        <button class="btn" id="saveProduct">Zapisz</button>
+        <button class="btn" id="cancelPopup">Anuluj</button>
+    </div>
+</div>
+
+<!-- Popup do edycji ceny -->
+<div class="popup" id="editPricePopup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-btn" id="closeEditPricePopup">&times;</span>
+        <h2>Edytuj cenę</h2>
+        <label for="editPrice">Cena:</label>
+        <input type="number" id="editPrice" required>
+        <button class="btn" id="saveEditPrice">Zapisz</button>
+        <button class="btn" id="cancelEditPrice">Anuluj</button>
+    </div>
+</div>
+
+<!-- Popup do edycji ilości -->
+<div class="popup" id="editQuantityPopup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-btn" id="closeEditQuantityPopup">&times;</span>
+        <h2>Edytuj ilość</h2>
+        <label for="editQuantity">Ilość:</label>
+        <input type="number" id="editQuantity" required>
+        <button class="btn" id="saveEditQuantity">Zapisz</button>
+        <button class="btn" id="cancelEditQuantity">Anuluj</button>
+    </div>
+</div>
+
+<!-- Popup do edycji opisu -->
+<div class="popup" id="editDescriptionPopup" style="display: none;">
+    <div class="popup-content">
+        <span class="close-btn" id="closeEditDescriptionPopup">&times;</span>
+        <h2>Edytuj opis</h2>
+        <label for="editDescription">Opis:</label>
+        <textarea id="editDescription" required></textarea>
+        <button class="btn" id="saveEditDescription">Zapisz</button>
+        <button class="btn" id="cancelEditDescription">Anuluj</button>
+    </div>
+</div>
+
+<!-- Popup potwierdzenia usunięcia -->
+<div class="popup" id="deletePopup" style="display: none;">
+    <div class="popup-content">
+        <h2>Czy na pewno chcesz usunąć ten produkt?</h2>
+        <button class="btn" id="confirmDelete">Potwierdzam</button>
+        <button class="btn" id="cancelDelete">Anuluj</button>
+    </div>
+</div>
+
+<script>
+    let productIdToDelete = null; // Zmienna do przechowywania ID produktu do usunięcia
+    let currentProductId = null; // Zmienna do przechowywania ID aktualnie edytowanego produktu
+
+    function openPopup() {
+        document.getElementById("popup").style.display = "flex"; // Otwórz popup do dodawania
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none"; // Zamknij popup do dodawania
+    }
+
+    function openEditPricePopup(productId, currentPrice) {
+        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
+        document.getElementById("editPrice").value = currentPrice; // Ustaw aktualną cenę
+        document.getElementById("editPricePopup").style.display = "flex"; // Otwórz popup edycji ceny
+    }
+
+    function openEditQuantityPopup(productId, currentQuantity) {
+        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
+        document.getElementById("editQuantity").value = currentQuantity; // Ustaw aktualną ilość
+        document.getElementById("editQuantityPopup").style.display = "flex"; // Otwórz popup edycji ilości
+    }
+
+    function openEditDescriptionPopup(productId, currentDescription) {
+        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
+        document.getElementById("editDescription").value = decodeURIComponent(currentDescription); // Ustaw aktualny opis
+        document.getElementById("editDescriptionPopup").style.display = "flex"; // Otwórz popup edycji opisu
+    }
+
+    function closeEditPricePopup() {
+        document.getElementById("editPricePopup").style.display = "none"; // Zamknij popup edycji ceny
+    }
+
+    function closeEditQuantityPopup() {
+        document.getElementById("editQuantityPopup").style.display = "none"; // Zamknij popup edycji ilości
+    }
+
+    function closeEditDescriptionPopup() {
+        document.getElementById("editDescriptionPopup").style.display = "none"; // Zamknij popup edycji opisu
+    }
+
+    function confirmDelete(productId) {
+        productIdToDelete = productId; // Ustaw ID produktu do usunięcia
+        document.getElementById("deletePopup").style.display = "flex"; // Otwórz popup potwierdzenia
+    }
+
+    document.getElementById("confirmDelete").addEventListener("click", function() {
+        // Logika usuwania produktu
+        if (productIdToDelete) {
+            // Tutaj dodaj kod do usunięcia produktu (np. wywołanie API)
+            console.log(`Usuwam produkt o ID: ${productIdToDelete}`);
+            // Po usunięciu zamknij popup
+            closeDeletePopup();
+        }
+    });
+
+    document.getElementById("cancelDelete").addEventListener("click", closeDeletePopup);
+
+    function closeDeletePopup() {
+        document.getElementById("deletePopup").style.display = "none"; // Zamknij popup potwierdzenia
+        productIdToDelete = null; // Resetuj ID produktu do usunięcia
+    }
+
+    // Dodaj event listener do przycisku anulowania w popupie dodawania
+    document.getElementById("cancelPopup").addEventListener("click", closePopup);
+    // Dodaj event listener do przycisku zamykania popupu dodawania
+    document.getElementById("closePopup").addEventListener("click", closePopup);
+
+    // Dodaj event listener do przycisku anulowania w popupie edycji ceny
+    document.getElementById("cancelEditPrice").addEventListener("click", closeEditPricePopup);
+    // Dodaj event listener do przycisku zamykania popupu edycji ceny
+    document.getElementById("closeEditPricePopup").addEventListener("click", closeEditPricePopup);
+
+    // Dodaj event listener do przycisku zapisywania edytowanej ceny
+    document.getElementById("saveEditPrice").addEventListener("click", function() {
+        const newPrice = document.getElementById("editPrice").value;
+        // Tutaj dodaj kod do zapisania nowej ceny (np. wywołanie API)
+        console.log(`Zapisano nową cenę: ${newPrice} dla produktu ID: ${currentProductId}`);
+        closeEditPricePopup(); // Zamknij popup po zapisaniu
+    });
+
+    // Dodaj event listener do przycisku anulowania w popupie edycji ilości
+    document.getElementById("cancelEditQuantity").addEventListener("click", closeEditQuantityPopup);
+    // Dodaj event listener do przycisku zamykania popupu edycji ilości
+    document.getElementById("closeEditQuantityPopup").addEventListener("click", closeEditQuantityPopup);
+
+    // Dodaj event listener do przycisku zapisywania edytowanej ilości
+    document.getElementById("saveEditQuantity").addEventListener("click", function() {
+        const newQuantity = document.getElementById("editQuantity").value;
+        // Tutaj dodaj kod do zapisania nowej ilości (np. wywołanie API)
+        console.log(`Zapisano nową ilość: ${newQuantity} dla produktu ID: ${currentProductId}`);
+        closeEditQuantityPopup(); // Zamknij popup po zapisaniu
+    });
+
+    // Dodaj event listener do przycisku anulowania w popupie edycji opisu
+    document.getElementById("cancelEditDescription").addEventListener("click", closeEditDescriptionPopup);
+    // Dodaj event listener do przycisku zamykania popupu edycji opisu
+    document.getElementById("closeEditDescriptionPopup").addEventListener("click", closeEditDescriptionPopup);
+
+    // Dodaj event listener do przycisku zapisywania edytowanego opisu
+    document.getElementById("saveEditDescription").addEventListener("click", function() {
+        const newDescription = document.getElementById("editDescription").value;
+        // Tutaj dodaj kod do zapisania nowego opisu (np. wywołanie API)
+        console.log(`Zapisano nowy opis: ${newDescription} dla produktu ID: ${currentProductId}`);
+        closeEditDescriptionPopup(); // Zamknij popup po zapisaniu
+    });
+</script>
+</body>
+</html>
