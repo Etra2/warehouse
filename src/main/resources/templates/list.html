@@ -10,6 +10,9 @@
 <div class="container">
     <h1>Lista Produktów</h1>
 
+    <!-- Przycisk wylogowania obsługa spring security -->
+    <button class="btn" onclick="window.location.href='/logout'">Wyloguj</button>
+
     <!-- Przycisk otwierający popup do dodania nowego produktu -->
     <button class="btn" onclick="openPopup()">Dodaj Nowy Produkt</button>
 
@@ -41,6 +44,7 @@
     </table>
 </div>
 
+<!-- Popupy (dodawanie, edycja, usuwanie) -->
 <!-- Popup do dodawania nowego produktu -->
 <div class="popup" id="popup" style="display: none;">
     <div class="popup-content">
@@ -109,58 +113,55 @@
 </div>
 
 <script>
-    let productIdToDelete = null; // Zmienna do przechowywania ID produktu do usunięcia
-    let currentProductId = null; // Zmienna do przechowywania ID aktualnie edytowanego produktu
+    let productIdToDelete = null;
+    let currentProductId = null;
 
     function openPopup() {
-        document.getElementById("popup").style.display = "flex"; // Otwórz popup do dodawania
+        document.getElementById("popup").style.display = "flex";
     }
 
     function closePopup() {
-        document.getElementById("popup").style.display = "none"; // Zamknij popup do dodawania
+        document.getElementById("popup").style.display = "none";
     }
 
     function openEditPricePopup(productId, currentPrice) {
-        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
-        document.getElementById("editPrice").value = currentPrice; // Ustaw aktualną cenę
-        document.getElementById("editPricePopup").style.display = "flex"; // Otwórz popup edycji ceny
+        currentProductId = productId;
+        document.getElementById("editPrice").value = currentPrice;
+        document.getElementById("editPricePopup").style.display = "flex";
     }
 
     function openEditQuantityPopup(productId, currentQuantity) {
-        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
-        document.getElementById("editQuantity").value = currentQuantity; // Ustaw aktualną ilość
-        document.getElementById("editQuantityPopup").style.display = "flex"; // Otwórz popup edycji ilości
+        currentProductId = productId;
+        document.getElementById("editQuantity").value = currentQuantity;
+        document.getElementById("editQuantityPopup").style.display = "flex";
     }
 
     function openEditDescriptionPopup(productId, currentDescription) {
-        currentProductId = productId; // Ustaw ID aktualnie edytowanego produktu
-        document.getElementById("editDescription").value = decodeURIComponent(currentDescription); // Ustaw aktualny opis
-        document.getElementById("editDescriptionPopup").style.display = "flex"; // Otwórz popup edycji opisu
+        currentProductId = productId;
+        document.getElementById("editDescription").value = decodeURIComponent(currentDescription);
+        document.getElementById("editDescriptionPopup").style.display = "flex";
     }
 
     function closeEditPricePopup() {
-        document.getElementById("editPricePopup").style.display = "none"; // Zamknij popup edycji ceny
+        document.getElementById("editPricePopup").style.display = "none";
     }
 
     function closeEditQuantityPopup() {
-        document.getElementById("editQuantityPopup").style.display = "none"; // Zamknij popup edycji ilości
+        document.getElementById("editQuantityPopup").style.display = "none";
     }
 
     function closeEditDescriptionPopup() {
-        document.getElementById("editDescriptionPopup").style.display = "none"; // Zamknij popup edycji opisu
+        document.getElementById("editDescriptionPopup").style.display = "none";
     }
 
     function confirmDelete(productId) {
-        productIdToDelete = productId; // Ustaw ID produktu do usunięcia
-        document.getElementById("deletePopup").style.display = "flex"; // Otwórz popup potwierdzenia
+        productIdToDelete = productId;
+        document.getElementById("deletePopup").style.display = "flex";
     }
 
     document.getElementById("confirmDelete").addEventListener("click", function() {
-        // Logika usuwania produktu
         if (productIdToDelete) {
-            // Tutaj dodaj kod do usunięcia produktu (np. wywołanie API)
             console.log(`Usuwam produkt o ID: ${productIdToDelete}`);
-            // Po usunięciu zamknij popup
             closeDeletePopup();
         }
     });
@@ -168,52 +169,38 @@
     document.getElementById("cancelDelete").addEventListener("click", closeDeletePopup);
 
     function closeDeletePopup() {
-        document.getElementById("deletePopup").style.display = "none"; // Zamknij popup potwierdzenia
-        productIdToDelete = null; // Resetuj ID produktu do usunięcia
+        document.getElementById("deletePopup").style.display = "none";
+        productIdToDelete = null;
     }
 
-    // Dodaj event listener do przycisku anulowania w popupie dodawania
     document.getElementById("cancelPopup").addEventListener("click", closePopup);
-    // Dodaj event listener do przycisku zamykania popupu dodawania
     document.getElementById("closePopup").addEventListener("click", closePopup);
 
-    // Dodaj event listener do przycisku anulowania w popupie edycji ceny
     document.getElementById("cancelEditPrice").addEventListener("click", closeEditPricePopup);
-    // Dodaj event listener do przycisku zamykania popupu edycji ceny
     document.getElementById("closeEditPricePopup").addEventListener("click", closeEditPricePopup);
 
-    // Dodaj event listener do przycisku zapisywania edytowanej ceny
     document.getElementById("saveEditPrice").addEventListener("click", function() {
         const newPrice = document.getElementById("editPrice").value;
-        // Tutaj dodaj kod do zapisania nowej ceny (np. wywołanie API)
         console.log(`Zapisano nową cenę: ${newPrice} dla produktu ID: ${currentProductId}`);
-        closeEditPricePopup(); // Zamknij popup po zapisaniu
+        closeEditPricePopup();
     });
 
-    // Dodaj event listener do przycisku anulowania w popupie edycji ilości
     document.getElementById("cancelEditQuantity").addEventListener("click", closeEditQuantityPopup);
-    // Dodaj event listener do przycisku zamykania popupu edycji ilości
     document.getElementById("closeEditQuantityPopup").addEventListener("click", closeEditQuantityPopup);
 
-    // Dodaj event listener do przycisku zapisywania edytowanej ilości
     document.getElementById("saveEditQuantity").addEventListener("click", function() {
         const newQuantity = document.getElementById("editQuantity").value;
-        // Tutaj dodaj kod do zapisania nowej ilości (np. wywołanie API)
         console.log(`Zapisano nową ilość: ${newQuantity} dla produktu ID: ${currentProductId}`);
-        closeEditQuantityPopup(); // Zamknij popup po zapisaniu
+        closeEditQuantityPopup();
     });
 
-    // Dodaj event listener do przycisku anulowania w popupie edycji opisu
     document.getElementById("cancelEditDescription").addEventListener("click", closeEditDescriptionPopup);
-    // Dodaj event listener do przycisku zamykania popupu edycji opisu
     document.getElementById("closeEditDescriptionPopup").addEventListener("click", closeEditDescriptionPopup);
 
-    // Dodaj event listener do przycisku zapisywania edytowanego opisu
     document.getElementById("saveEditDescription").addEventListener("click", function() {
         const newDescription = document.getElementById("editDescription").value;
-        // Tutaj dodaj kod do zapisania nowego opisu (np. wywołanie API)
         console.log(`Zapisano nowy opis: ${newDescription} dla produktu ID: ${currentProductId}`);
-        closeEditDescriptionPopup(); // Zamknij popup po zapisaniu
+        closeEditDescriptionPopup();
     });
 </script>
 </body>
