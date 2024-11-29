@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Produktów</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="container">
@@ -201,6 +201,63 @@
         const newDescription = document.getElementById("editDescription").value;
         console.log(`Zapisano nowy opis: ${newDescription} dla produktu ID: ${currentProductId}`);
         closeEditDescriptionPopup();
+    });
+
+    // Obsługa przycisku zapisz w popupie dodawania nowego produktu
+    document.getElementById("saveProduct").addEventListener("click", function() {
+        // (kod obsługi przycisku)
+        document.getElementById("saveProduct").addEventListener("click", function() {
+            const productName = document.getElementById("productName").value;
+            const productDescription = document.getElementById("productDescription").value;
+            const productPrice = document.getElementById("productPrice").value;
+            const productQuantity = document.getElementById("productQuantity").value;
+
+            // Walidacja danych
+            if (!productName || !productDescription ||  !productPrice || !productQuantity) {
+                alert("Wszystkie pola muszą być wypełnione!");
+                return;
+            }
+
+            // Przykład logiki do zapisywania nowego produktu
+            //console.log('Nowy produkt:
+            //    Nazwa: ${productName},
+            //Opis: ${productDescription},
+            //Cena: ${productPrice},
+            //Ilość: ${productQuantity}');
+
+            // Tutaj możesz dodać kod do wysłania danych do serwera, np. za pomocą fetch():
+
+            fetch('/products/saveProduct', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: productName,
+                    description: productDescription,
+                    price: parseFloat(productPrice),
+                    quantity: parseInt(productQuantity, 10)
+                })
+            }).then(async response => {
+                if (response.ok) {
+                    const message = await response.text();
+                    alert(message);
+                    closePopup();
+                } else {
+                    alert('Wystąpił błąd podczas dodawania produktu.');
+                }
+            });
+
+            // Zamknięcie popupu po zapisaniu
+            closePopup();
+
+            // Wyczyszczenie pól formularza
+            document.getElementById("productName").value = '';
+            document.getElementById("productDescription").value = '';
+            document.getElementById("productPrice").value = '';
+            document.getElementById("productQuantity").value = '';
+        });
+
     });
 </script>
 </body>

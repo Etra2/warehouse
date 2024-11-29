@@ -3,6 +3,7 @@ package com.inventorymanagement.controller;
 import com.inventorymanagement.model.Product;
 import com.inventorymanagement.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model; // Właściwy import dla Springa
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +21,22 @@ public class ProductController {
         return "product/list";
     }
 
+    @GetMapping("list")
+    public String showListPage(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "list";
+    }
+
     @GetMapping("/new")
     public String newProductForm(Model model) {
         model.addAttribute("product", new Product());
         return "product/new";
     }
 
-    @PostMapping
-    public String saveProduct(@ModelAttribute Product product) {
+    @PostMapping("/saveProduct")
+    public ResponseEntity<String> saveProduct(@RequestBody Product product) {
         productService.saveProduct(product);
-        return "redirect:/products";
+        return ResponseEntity.ok("Produkt został zapisany pomyślnie!");
     }
 
     @GetMapping("/delete/{id}")
