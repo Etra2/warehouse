@@ -5,6 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Produktów</title>
+    <style>
+        /* Basic styles for the popups */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .close-btn {
+            cursor: pointer;
+        }
+        .edit-buttons {
+            margin: 20px 0;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -16,29 +41,32 @@
     <!-- Przycisk otwierający popup do dodania nowego produktu -->
     <button class="btn" onclick="openPopup()">Dodaj Nowy Produkt</button>
 
+    <!-- Edit buttons moved above the table -->
+    <div class="edit-buttons">
+        <button class="btn" onclick="openEditPricePopup()">Edytuj cenę</button>
+        <button class="btn" onclick="openEditQuantityPopup()">Edytuj ilość</button>
+        <button class="btn" onclick="openEditDescriptionPopup()">Edytuj opis</button>
+        <button class="btn btn-delete" onclick="confirmDelete()">Usuń</button>
+    </div>
+
     <!-- Tabela produktów -->
     <table>
         <thead>
         <tr>
+            <th>Wybierz</th>
             <th>Nazwa</th>
             <th>Opis</th>
             <th>Cena</th>
             <th>Ilość</th>
-            <th>Akcje</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${products}">
+            <td><input type="radio" name="selectedProduct" value="${product.id}"></td>
             <td th:text="${product.name}"></td>
             <td th:text="${product.description}"></td>
             <td th:text="${product.price}"></td>
             <td th:text="${product.quantity}"></td>
-            <td>
-                <button class="btn" onclick="openEditPricePopup('${product.id}', ${product.price})">Edytuj cenę</button>
-                <button class="btn" onclick="openEditQuantityPopup('${product.id}', ${product.quantity})">Edytuj ilość</button>
-                <button class="btn" onclick="openEditDescriptionPopup('${product.id}', encodeURIComponent('${product.description}'))">Edytuj opis</button>
-                <button class="btn btn-delete" onclick="confirmDelete('${product.id}')">Usuń</button>
-            </td>
         </tr>
         </tbody>
     </table>
@@ -124,22 +152,37 @@
         document.getElementById("popup").style.display = "none";
     }
 
-    function openEditPricePopup(productId, currentPrice) {
-        currentProductId = productId;
-        document.getElementById("editPrice").value = currentPrice;
-        document.getElementById("editPricePopup").style.display = "flex";
+    function openEditPricePopup() {
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        if (selectedProduct) {
+            currentProductId = selectedProduct.value;
+            document.getElementById("editPrice").value = ""; // Reset field
+            document.getElementById("editPricePopup").style.display = "flex";
+        } else {
+            alert("Proszę wybrać produkt.");
+        }
     }
 
-    function openEditQuantityPopup(productId, currentQuantity) {
-        currentProductId = productId;
-        document.getElementById("editQuantity").value = currentQuantity;
-        document.getElementById("editQuantityPopup").style.display = "flex";
+    function openEditQuantityPopup() {
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        if (selectedProduct) {
+            currentProductId = selectedProduct.value;
+            document.getElementById("editQuantity").value = ""; // Reset field
+            document.getElementById("editQuantityPopup").style.display = "flex";
+        } else {
+            alert("Proszę wybrać produkt.");
+        }
     }
 
-    function openEditDescriptionPopup(productId, currentDescription) {
-        currentProductId = productId;
-        document.getElementById("editDescription").value = decodeURIComponent(currentDescription);
-        document.getElementById("editDescriptionPopup").style.display = "flex";
+    function openEditDescriptionPopup() {
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        if (selectedProduct) {
+            currentProductId = selectedProduct.value;
+            document.getElementById("editDescription").value = ""; // Reset field
+            document.getElementById("editDescriptionPopup").style.display = "flex";
+        } else {
+            alert("Proszę wybrać produkt.");
+        }
     }
 
     function closeEditPricePopup() {
@@ -154,9 +197,14 @@
         document.getElementById("editDescriptionPopup").style.display = "none";
     }
 
-    function confirmDelete(productId) {
-        productIdToDelete = productId;
-        document.getElementById("deletePopup").style.display = "flex";
+    function confirmDelete() {
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        if (selectedProduct) {
+            productIdToDelete = selectedProduct.value;
+            document.getElementById("deletePopup").style.display = "flex";
+        } else {
+            alert("Proszę wybrać produkt.");
+        }
     }
 
     document.getElementById("confirmDelete").addEventListener("click", function() {
@@ -177,87 +225,55 @@
     document.getElementById("closePopup").addEventListener("click", closePopup);
 
     document.getElementById("cancelEditPrice").addEventListener("click", closeEditPricePopup);
-    document.getElementById("closeEditPricePopup").addEventListener("click", closeEditPricePopup);
-
-    document.getElementById("saveEditPrice").addEventListener("click", function() {
-        const newPrice = document.getElementById("editPrice").value;
-        console.log(`Zapisano nową cenę: ${newPrice} dla produktu ID: ${currentProductId}`);
-        closeEditPricePopup();
-    });
-
     document.getElementById("cancelEditQuantity").addEventListener("click", closeEditQuantityPopup);
-    document.getElementById("closeEditQuantityPopup").addEventListener("click", closeEditQuantityPopup);
-
-    document.getElementById("saveEditQuantity").addEventListener("click", function() {
-        const newQuantity = document.getElementById("editQuantity").value;
-        console.log(`Zapisano nową ilość: ${newQuantity} dla produktu ID: ${currentProductId}`);
-        closeEditQuantityPopup();
-    });
-
     document.getElementById("cancelEditDescription").addEventListener("click", closeEditDescriptionPopup);
-    document.getElementById("closeEditDescriptionPopup").addEventListener("click", closeEditDescriptionPopup);
 
-    document.getElementById("saveEditDescription").addEventListener("click", function() {
-        const newDescription = document.getElementById("editDescription").value;
-        console.log(`Zapisano nowy opis: ${newDescription} dla produktu ID: ${currentProductId}`);
-        closeEditDescriptionPopup();
-    });
-
-    // Obsługa przycisku zapisz w popupie dodawania nowego produktu
     document.getElementById("saveProduct").addEventListener("click", function() {
-        // (kod obsługi przycisku)
-        document.getElementById("saveProduct").addEventListener("click", function() {
-            const productName = document.getElementById("productName").value;
-            const productDescription = document.getElementById("productDescription").value;
-            const productPrice = document.getElementById("productPrice").value;
-            const productQuantity = document.getElementById("productQuantity").value;
-
-            // Walidacja danych
-            if (!productName || !productDescription ||  !productPrice || !productQuantity) {
-                alert("Wszystkie pola muszą być wypełnione!");
-                return;
-            }
-
-            // Przykład logiki do zapisywania nowego produktu
-            //console.log('Nowy produkt:
-            //    Nazwa: ${productName},
-            //Opis: ${productDescription},
-            //Cena: ${productPrice},
-            //Ilość: ${productQuantity}');
-
-            // Tutaj możesz dodać kod do wysłania danych do serwera, np. za pomocą fetch():
-
-            fetch('/products/saveProduct', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: productName,
-                    description: productDescription,
-                    price: parseFloat(productPrice),
-                    quantity: parseInt(productQuantity, 10)
-                })
-            }).then(async response => {
+        const name = document.getElementById("productName").value;
+        const description = document.getElementById("productDescription").value;
+        const price = document.getElementById("productPrice").value;
+        const quantity = document.getElementById("productQuantity").value;
+        fetch('/products/saveProduct', { // Line 54
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, description, price, quantity }) // Line 58
+        })
+            .then(async response => {
                 if (response.ok) {
                     const message = await response.text();
                     alert(message);
                     closePopup();
-                } else {
-                    alert('Wystąpił błąd podczas dodawania produktu.');
-                }
+                    location.reload();
+                }else
+                    alert('Wystąpił błąd podczas dodawania produktu.')
             });
 
-            // Zamknięcie popupu po zapisaniu
-            closePopup();
+        // Here you would typically send the data to the server
+        console.log(`Dodaję produkt: ${name}, ${description}, ${price}, ${quantity}`);
+        closePopup();
+    });
 
-            // Wyczyszczenie pól formularza
-            document.getElementById("productName").value = '';
-            document.getElementById("productDescription").value = '';
-            document.getElementById("productPrice").value = '';
-            document.getElementById("productQuantity").value = '';
-        });
+    document.getElementById("saveEditPrice").addEventListener("click", function() {
+        const newPrice = document.getElementById("editPrice").value;
+        // Here you would typically send the updated price to the server
+        console.log(`Zmieniam cenę produktu ID: ${currentProductId} na ${newPrice}`);
+        closeEditPricePopup();
+    });
 
+    document.getElementById("saveEditQuantity").addEventListener("click", function() {
+        const newQuantity = document.getElementById("editQuantity").value;
+        // Here you would typically send the updated quantity to the server
+        console.log(`Zmieniam ilość produktu ID: ${currentProductId} na ${newQuantity}`);
+        closeEditQuantityPopup();
+    });
+
+    document.getElementById("saveEditDescription").addEventListener("click", function() {
+        const newDescription = document.getElementById("editDescription").value;
+        // Here you would typically send the updated description to the server
+        console.log(`Zmieniam opis produktu ID: ${currentProductId} na ${newDescription}`);
+        closeEditDescriptionPopup();
     });
 </script>
 </body>
