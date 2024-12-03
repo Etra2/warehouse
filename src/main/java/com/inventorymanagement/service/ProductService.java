@@ -27,4 +27,11 @@ public class ProductService {
     public List<Product> getLowStockProducts(int threshold) {
         return productRepository.findByQuantityLessThan(threshold);
     }
+
+    public void updateProductPrice(Long id, double newPrice) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setPrice(newPrice);
+        productRepository.save(product);
+    }
 }
