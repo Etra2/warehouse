@@ -62,7 +62,10 @@
         </thead>
         <tbody>
         <tr th:each="product : ${products}">
-            <td><input type="radio" name="selectedProduct" value="${product.id}"></td>
+            <td>
+                <input type="radio" name="selectedProduct" value="${product.id}">
+                <label th:text="${product.id}"></label>
+            </td>
             <td th:text="${product.name}"></td>
             <td th:text="${product.description}"></td>
             <td th:text="${product.price}"></td>
