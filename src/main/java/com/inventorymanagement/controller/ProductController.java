@@ -64,6 +64,26 @@ public class ProductController {
         return ResponseEntity.ok("Cena produktu została zaktualizowana.");
     }
 
+    @PutMapping("/updateDescription/{id}")
+    public ResponseEntity<String> updateProductDescription(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String newDescription = body.get("description");
+        if (newDescription == null || newDescription.trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Opis nie może być pusty.");
+        }
+        productService.updateProductDescription(id, newDescription);
+        return ResponseEntity.ok("Opis produktu został zaktualizowany.");
+    }
+
+    @PutMapping("/updateQuantity/{id}")
+    public ResponseEntity<String> updateProductQuantity(@PathVariable Long id, @RequestBody Map<String, Integer> body) {
+        Integer newQuantity = body.get("quantity");
+        if (newQuantity == null || newQuantity <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ilość musi być większa od zera.");
+        }
+        productService.updateProductQuantity(id, newQuantity);
+        return ResponseEntity.ok("Ilość produktu została zaktualizowana.");
+    }
+
 }
 
 

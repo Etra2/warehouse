@@ -34,4 +34,18 @@ public class ProductService {
         product.setPrice(newPrice);
         productRepository.save(product);
     }
+
+    public void updateProductDescription(Long id, String newDescription) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setDescription(newDescription);
+        productRepository.save(product);
+    }
+
+    public void updateProductQuantity(Long id, int newQuantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setQuantity(newQuantity);
+        productRepository.save(product);
+    }
 }
