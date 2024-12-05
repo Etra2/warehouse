@@ -42,11 +42,7 @@ public class ProductController {
         return ResponseEntity.ok("Produkt został zapisany pomyślnie!");
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return "redirect:/products";
-    }
+    
 
     @GetMapping("/low-stock")
     public String lowStockProducts(Model model) {
@@ -82,6 +78,16 @@ public class ProductController {
         }
         productService.updateProductQuantity(id, newQuantity);
         return ResponseEntity.ok("Ilość produktu została zaktualizowana.");
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
+        try {
+            productService.deleteProduct(id); // Wywołanie metody usuwania z serwisu
+            return ResponseEntity.ok("Produkt został pomyślnie usunięty.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Nie udało się usunąć produktu.");
+        }
     }
 
 }

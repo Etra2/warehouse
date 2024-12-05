@@ -267,28 +267,48 @@
 
 
     function confirmDelete() {
-        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked'); // Pobierz zaznaczony produkt
         if (selectedProduct) {
-            productIdToDelete = selectedProduct.value;
-            document.getElementById("deletePopup").style.display = "flex";
+            productIdToDelete = selectedProduct.closest('tr').getAttribute('data-id'); // Pobierz ID produktu z atrybutu 'data-id'
+            document.getElementById("deletePopup").style.display = "flex"; // Wyświetl popup potwierdzenia
         } else {
-            alert("Proszę wybrać produkt.");
+            alert("Proszę wybrać produkt."); // Jeśli nie wybrano produktu
         }
     }
 
+    // Funkcja potwierdzająca usunięcie produktu
     document.getElementById("confirmDelete").addEventListener("click", function() {
         if (productIdToDelete) {
-            console.log(`Usuwam produkt o ID: ${productIdToDelete}`);
-            closeDeletePopup();
+            // Wysłanie żądania DELETE do backendu
+            fetch(`/products/delete/${productIdToDelete}`, {
+                method: 'DELETE'
+            })
+                .then(async response => {
+                    if (response.ok) {
+                        const message = await response.text();
+                        alert(message); // Powiadomienie użytkownika o sukcesie
+                        closeDeletePopup(); // Zamknij popup
+                        location.reload(); // Odśwież tabelę produktów
+                    } else {
+                        alert('Wystąpił błąd podczas usuwania produktu.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Błąd:", error);
+                    alert('Nie udało się usunąć produktu.');
+                });
         }
     });
 
+    // Funkcja zamykająca popup potwierdzenia usunięcia
+    function closeDeletePopup() {
+        document.getElementById("deletePopup").style.display = "none"; // Ukryj popup
+        productIdToDelete = null; // Resetuj ID produktu do usunięcia
+    }
+
+    // Przypisanie funkcji do przycisku anulowania w popupie
     document.getElementById("cancelDelete").addEventListener("click", closeDeletePopup);
 
-    function closeDeletePopup() {
-        document.getElementById("deletePopup").style.display = "none";
-        productIdToDelete = null;
-    }
 
     document.getElementById("cancelPopup").addEventListener("click", closePopup);
     document.getElementById("closePopup").addEventListener("click", closePopup);
