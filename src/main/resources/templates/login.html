@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logowanie</title>
+</head>
+<body>
+<div class="container login-container">
+  <h1>Logowanie</h1>
+
+  <form th:action="@{/login}" method="post" class="login-form">
+    <!-- Pole na login -->
+    <div class="form-group">
+      <label for="username">Nazwa użytkownika</label>
+      <input type="text" id="username" name="username" placeholder="Wprowadź nazwę użytkownika" required>
+    </div>
+
+    <!-- Pole na hasło -->
+    <div class="form-group">
+      <label for="password">Hasło</label>
+      <input type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
+    </div>
+
+    <!-- Przycisk logowania -->
+    <button type="submit" class="btn">Zaloguj się</button>
+  </form>
+
+  <!-- Link do rejestracji -->
+  <div class="register-link">
+    <p>Nie masz konta? <a th:href="@{/register}">Zarejestruj się</a></p>
+  </div>
+</div>
+</body>
+</html>

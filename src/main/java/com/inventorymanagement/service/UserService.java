@@ -5,6 +5,8 @@ import com.inventorymanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -12,7 +14,7 @@ public class UserService {
     private UserRepository userRepository;
 
     // Znajduje użytkownika na podstawie nazwy użytkownika
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);  // Rzutowanie (User) jest zbędne
     }
 
@@ -21,4 +23,3 @@ public class UserService {
         return userRepository.save(user);  // Poprawka z 'wait' na 'save'
     }
 }
-

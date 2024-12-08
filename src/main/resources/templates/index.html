@@ -3,10 +3,12 @@
 <head>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <meta charset="UTF-8">
-    <title>Test title</title>
+    <title>Menu główne</title>
 </head>
 <body>
 <h1> APLIKACJA MAGAZYNOWA</h1>
-<a th:href="@{/products/list}">Rozpocznij pracę z naszą super APLIKACJĄ !!!</a>
+<span><a th:href="@{/products/list}">LISTA PRODUKTÓW</a></span><br><br>
+<span><a th:href="@{/documents/list}">LISTA DOKUMENTÓW</a></span>
+<span><a th:href="@{/admin_site}">ADMINISTRACJA</a></span>
 </body>
 </html>
