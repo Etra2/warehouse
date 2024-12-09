@@ -2,12 +2,14 @@ package com.inventorymanagement.service;
 
 import com.inventorymanagement.model.User;
 import com.inventorymanagement.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     @Autowired
@@ -20,6 +22,6 @@ public class UserService {
 
     // Zapisuje nowego użytkownika
     public User saveUser(User user) {
-        return userRepository.save(user);  // Poprawka z 'wait' na 'save'
+        return userRepository.save(user);
     }
 }

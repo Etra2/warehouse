@@ -10,6 +10,16 @@
 <div class="container login-container">
   <h1>Logowanie</h1>
 
+  <!-- Komunikat z rejestracji -->
+  <div th:if="${message}" class="success-message">
+    <p th:text="${message}"></p>
+  </div>
+
+  <!-- Komunikat błędu logowania -->
+  <div th:if="${param.error}" class="error-message">
+    <p>Logowanie nieudane. Sprawdź nazwę użytkownika i hasło.</p>
+  </div>
+
   <form th:action="@{/login}" method="post" class="login-form">
     <!-- Pole na login -->
     <div class="form-group">
@@ -29,7 +39,7 @@
 
   <!-- Link do rejestracji -->
   <div class="register-link">
-    <p>Nie masz konta? <a th:href="@{/register}">Zarejestruj się</a></p>
+    <p>Nie masz konta? <a href="./register.html">Zarejestruj się</a></p>
   </div>
 </div>
 </body>

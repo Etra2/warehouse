@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -21,18 +20,19 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Wyłączenie CSRF tylko na potrzeby testowe
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll() // Publiczne ścieżki
+                        .requestMatchers("/login", "/register.html", "/css/**", "/registerUser").permitAll() // Publiczne ścieżki
                         .anyRequest().authenticated() // Pozostałe wymagają uwierzytelnienia
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/") // Strona główna po zalogowaniu
+                        .defaultSuccessUrl("/index") // Strona główna po zalogowaniu
+                        .failureUrl("/login?error=true")
                         .permitAll() // Dostęp dla wszystkich do strony logowania
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // Endpoint wylogowania
-                        .logoutSuccessUrl("/login") // Po wylogowaniu przekierowanie na login
-                        .permitAll() // Dostępny dla wszystkich
+                        .logoutUrl("/logout") //
+                        .logoutSuccessUrl("/login")
+                        .permitAll()
                 );
         return http.build();
     }

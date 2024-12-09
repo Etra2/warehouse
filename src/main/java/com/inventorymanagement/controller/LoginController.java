@@ -8,6 +8,10 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login() {
-        return "login"; // Zwraca nazwę pliku HTML (np. login.html)
+        return "login";
+    }
+    @GetMapping("/index")
+    public String index() {
+        return "index";
     }
 }
