@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -5,31 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Produktów</title>
-    <style>
-        /* Basic styles for the popups */
-        .popup {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        .close-btn {
-            cursor: pointer;
-        }
-        .edit-buttons {
-            margin: 20px 0;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -53,7 +29,7 @@
     <table>
         <thead>
         <tr>
-            <th>Wybierz</th>
+            <th>Indeks</th>
             <th>Nazwa</th>
             <th>Opis</th>
             <th>Cena</th>
@@ -61,8 +37,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${products}">
-            <td><input type="radio" name="selectedProduct" value="${product.id}"></td>
+        <tr th:each="product : ${products}" th:data-id="${product.id}">
+            <td>
+                <label>
+                    <input type="radio" name="selectedProduct">
+                </label>
+                <label th:text="${product.id}"></label>
+            </td>
             <td th:text="${product.name}"></td>
             <td th:text="${product.description}"></td>
             <td th:text="${product.price}"></td>
@@ -155,71 +136,155 @@
     function openEditPricePopup() {
         const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
         if (selectedProduct) {
-            currentProductId = selectedProduct.value;
-            document.getElementById("editPrice").value = ""; // Reset field
-            document.getElementById("editPricePopup").style.display = "flex";
+            // Pobierz ID z atrybutu 'data-id' najbliższego wiersza
+            currentProductId = selectedProduct.closest('tr').getAttribute('data-id');
+            console.log("Wybrany produkt ID:", currentProductId);  // Debugowanie ID
+            document.getElementById("editPrice").value = "";  // Resetowanie pola
+            document.getElementById("editPricePopup").style.display = "flex";  // Otwórz popup
         } else {
             alert("Proszę wybrać produkt.");
         }
     }
 
+
     function openEditQuantityPopup() {
         const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
         if (selectedProduct) {
-            currentProductId = selectedProduct.value;
-            document.getElementById("editQuantity").value = ""; // Reset field
+            currentProductId = selectedProduct.closest('tr').getAttribute('data-id');
+            document.getElementById("editQuantity").value = ""; // Wyzeruj pole ilości
             document.getElementById("editQuantityPopup").style.display = "flex";
         } else {
             alert("Proszę wybrać produkt.");
         }
     }
 
+    document.getElementById("saveEditQuantity").addEventListener("click", function() {
+        const newQuantity = document.getElementById("editQuantity").value;
+
+        if (!currentProductId || isNaN(newQuantity) || parseInt(newQuantity) < 0) {
+            alert("Proszę wybrać produkt i podać prawidłową ilość (liczba większa od zera).");
+            return;
+        }
+
+        // Wysyłanie żądania PUT do backendu
+        fetch(`/products/updateQuantity/${currentProductId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quantity: parseInt(newQuantity) }) // Nowa ilość w JSON
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const message = await response.text();
+                    alert(message);
+                    closeEditQuantityPopup();
+                    location.reload(); // Odśwież tabelę produktów
+                } else {
+                    alert('Wystąpił błąd podczas aktualizacji ilości.');
+                }
+            })
+            .catch(error => {
+                console.error("Błąd:", error);
+                alert('Nie udało się zaktualizować ilości.');
+            });
+    });
+
+    function closeEditQuantityPopup() {
+        document.getElementById("editQuantityPopup").style.display = "none";
+    }
+
     function openEditDescriptionPopup() {
         const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
         if (selectedProduct) {
-            currentProductId = selectedProduct.value;
-            document.getElementById("editDescription").value = ""; // Reset field
+            currentProductId = selectedProduct.closest('tr').getAttribute('data-id');
+            document.getElementById("editDescription").value = ""; // Wyzeruj pole opisu
             document.getElementById("editDescriptionPopup").style.display = "flex";
         } else {
             alert("Proszę wybrać produkt.");
         }
     }
 
-    function closeEditPricePopup() {
-        document.getElementById("editPricePopup").style.display = "none";
-    }
+    document.getElementById("saveEditDescription").addEventListener("click", function() {
+        const newDescription = document.getElementById("editDescription").value;
 
-    function closeEditQuantityPopup() {
-        document.getElementById("editQuantityPopup").style.display = "none";
-    }
+        if (!currentProductId || !newDescription.trim()) {
+            alert("Proszę wybrać produkt i podać nowy opis.");
+            return;
+        }
+
+        // Wysyłanie żądania PUT do backendu
+        fetch(`/products/updateDescription/${currentProductId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ description: newDescription }) // Nowy opis w JSON
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const message = await response.text();
+                    alert(message);
+                    closeEditDescriptionPopup();
+                    location.reload(); // Odśwież tabelę produktów
+                } else {
+                    alert('Wystąpił błąd podczas aktualizacji opisu.');
+                }
+            })
+            .catch(error => {
+                console.error("Błąd:", error);
+                alert('Nie udało się zaktualizować opisu.');
+            });
+    });
 
     function closeEditDescriptionPopup() {
         document.getElementById("editDescriptionPopup").style.display = "none";
     }
 
+
     function confirmDelete() {
-        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked');
+        const selectedProduct = document.querySelector('input[name="selectedProduct"]:checked'); // Pobierz zaznaczony produkt
         if (selectedProduct) {
-            productIdToDelete = selectedProduct.value;
-            document.getElementById("deletePopup").style.display = "flex";
+            productIdToDelete = selectedProduct.closest('tr').getAttribute('data-id'); // Pobierz ID produktu z atrybutu 'data-id'
+            document.getElementById("deletePopup").style.display = "flex"; // Wyświetl popup potwierdzenia
         } else {
-            alert("Proszę wybrać produkt.");
+            alert("Proszę wybrać produkt."); // Jeśli nie wybrano produktu
         }
     }
 
+    // Funkcja potwierdzająca usunięcie produktu
     document.getElementById("confirmDelete").addEventListener("click", function() {
         if (productIdToDelete) {
-            console.log(`Usuwam produkt o ID: ${productIdToDelete}`);
-            closeDeletePopup();
+            // Wysłanie żądania DELETE do backendu
+            fetch(`/products/delete/${productIdToDelete}`, {
+                method: 'DELETE'
+            })
+                .then(async response => {
+                    if (response.ok) {
+                        const message = await response.text();
+                        alert(message); // Powiadomienie użytkownika o sukcesie
+                        closeDeletePopup(); // Zamknij popup
+                        location.reload(); // Odśwież tabelę produktów
+                    } else {
+                        alert('Wystąpił błąd podczas usuwania produktu.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Błąd:", error);
+                    alert('Nie udało się usunąć produktu.');
+                });
         }
     });
 
+    // Funkcja zamykająca popup potwierdzenia usunięcia
+    function closeDeletePopup() {
+        document.getElementById("deletePopup").style.display = "none"; // Ukryj popup
+        productIdToDelete = null; // Resetuj ID produktu do usunięcia
+    }
+
+    // Przypisanie funkcji do przycisku anulowania w popupie
     document.getElementById("cancelDelete").addEventListener("click", closeDeletePopup);
 
-    function closeDeletePopup() {
-        document.getElementById("deletePopup").style.display = "none";
-        productIdToDelete = null;
-    }
 
     document.getElementById("cancelPopup").addEventListener("click", closePopup);
     document.getElementById("closePopup").addEventListener("click", closePopup);
@@ -255,12 +320,45 @@
         closePopup();
     });
 
-    document.getElementById("saveEditPrice").addEventListener("click", function() {
+    document.getElementById("saveEditPrice").addEventListener("click", function () {
         const newPrice = document.getElementById("editPrice").value;
-        // Here you would typically send the updated price to the server
-        console.log(`Zmieniam cenę produktu ID: ${currentProductId} na ${newPrice}`);
-        closeEditPricePopup();
+
+        if (!currentProductId || !newPrice || parseFloat(newPrice) <= 0) {
+            alert("Proszę wybrać produkt i podać prawidłową cenę (liczba większa od zera).");
+            return;
+        }
+
+        // Debugowanie URL przed wysłaniem
+        console.log(`Wysyłam żądanie do URL: /products/updatePrice/${currentProductId}`);
+
+        // Wyślij żądanie PUT do backendu
+        fetch(`/products/updatePrice/${currentProductId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ price: parseFloat(newPrice) }) // Wysłanie nowej ceny
+        })
+            .then(async response => {
+                if (response.ok) {
+                    const message = await response.text();
+                    alert(message); // Powiadomienie użytkownika o sukcesie
+                    closeEditPricePopup(); // Zamknij popup po pomyślnej aktualizacji
+                    location.reload(); // Odśwież tabelę produktów
+                } else {
+                    alert('Wystąpił błąd podczas aktualizacji ceny.');
+                }
+            })
+            .catch(error => {
+                console.error("Błąd:", error);
+                alert('Nie udało się zaktualizować ceny.');
+            });
     });
+
+    function closeEditPricePopup() {
+        document.getElementById("editPricePopup").style.display = "none"; // Ukryj popup
+        document.getElementById("editPrice").value = ""; // Resetuj wartość pola edycji
+    }
 
     document.getElementById("saveEditQuantity").addEventListener("click", function() {
         const newQuantity = document.getElementById("editQuantity").value;

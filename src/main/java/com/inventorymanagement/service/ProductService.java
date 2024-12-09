@@ -20,11 +20,35 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public List<Product> getLowStockProducts(int threshold) {
+        return productRepository.findByQuantityLessThan(threshold);
+    }
+
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+    public void updateProductPrice(Long id, double newPrice) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setPrice(newPrice);
+        productRepository.save(product);
+    }
 
-    public List<Product> getLowStockProducts(int threshold) {
-        return productRepository.findByQuantityLessThan(threshold);
+    public void updateProductDescription(Long id, String newDescription) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setDescription(newDescription);
+        productRepository.save(product);
+    }
+
+    public void updateProductQuantity(Long id, int newQuantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono produktu o ID: " + id));
+        product.setQuantity(newQuantity);
+        productRepository.save(product);
+    }
+
+    public Product getProductById(Long id) {
+        return productRepository.getById(id);
     }
 }

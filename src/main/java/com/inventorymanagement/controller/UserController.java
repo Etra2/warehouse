@@ -4,41 +4,29 @@ import com.inventorymanagement.model.User;
 import com.inventorymanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model; // Właściwy import z Springa
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Collection;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/users")
 public class UserController {
-
     @Autowired
     private UserService userService;
 
-    @GetMapping("/login")
-    public String login() {
-        return "user/login";
-    }
-
-    @PostMapping("/login")
-    public String loginUser(@RequestParam String username, @RequestParam String password) {
-        User user = userService.findByUsername(username);
-        // Sprawdzenie hasła (pamiętaj o dodaniu szyfrowania haseł w produkcyjnych aplikacjach)
-        if (user != null && user.getPassword().equals(password)) {
-            return "redirect:/products";
-        }
-        return "redirect:/users/login";
-    }
-
-    @GetMapping("/register")
-    public String registerForm(Model model) {
-        model.addAttribute("user", new User());
-        return "user/register";
-    }
-
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user) {
+    @PostMapping("/registerUser")
+    public String registerUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
+        user.setActive(false);
+        user.setRole("user");
         userService.saveUser(user);
-        return "redirect:/users/login";
+        redirectAttributes.addFlashAttribute("message", "Utworzono nowego użytkownika. Poczekaj na aktywację przez Administratora...");
+
+        // Przekierowanie do strony logowania
+        return "redirect:/login";
     }
+
 }
 
