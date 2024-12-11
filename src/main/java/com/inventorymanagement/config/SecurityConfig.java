@@ -26,7 +26,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/index") // Strona główna po zalogowaniu
+                        .defaultSuccessUrl("/") // Strona główna po zalogowaniu
                         .failureUrl("/login?error=true")
                         .permitAll() // Dostęp dla wszystkich do strony logowania
                 )
