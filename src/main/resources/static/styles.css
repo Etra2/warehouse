@@ -129,6 +129,22 @@ tr:hover {
     background-color: #a60000; /* Ciemniejszy czerwony kolor przy najechaniu */
 }
 
+/* Nowy styl dla kontenera z przyciskami po prawej stronie */
+.right-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;  /* Przyciski będą wyrównane do prawej */
+    gap: 10px; /* Odstęp między przyciskami */
+}
+
+/* Styl przycisku usunięcia */
+.btn-delete {
+    background-color: #900000; /* Czerwony kolor dla przycisku usunięcia */
+}
+
+.btn-delete:hover {
+    background-color: #a60000; /* Ciemniejszy czerwony kolor przy najechaniu */
+}
 
 /* Styl dla kontenera logowania */
 .login-container {
