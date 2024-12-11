@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/styles.css}">
     <meta charset="UTF-8">
     <title>Menu główne</title>
 </head>
 <body>
-<h1> APLIKACJA MAGAZYNOWA</h1>
-<span><a th:href="@{/products/list}">LISTA PRODUKTÓW</a></span><br><br>
-<span><a th:href="@{/documents/list}">LISTA DOKUMENTÓW</a></span>
-<span><a th:href="@{/admin_site}">ADMINISTRACJA</a></span>
+<div id="nav">
+    <h1>APLIKACJA MAGAZYNOWA</h1>
+    <a class="menu-button" th:href="@{/products/list}">LISTA PRODUKTÓW</a>
+    <a class="menu-button" href="/documents.html">LISTA DOKUMENTÓW</a>
+    <a class="menu-button" href="/admin.html">ADMINISTRACJA</a>
+</div>
+
 </body>
 </html>
