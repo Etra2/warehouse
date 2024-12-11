@@ -19,8 +19,6 @@ public class UserController {
 
     @PostMapping("/registerUser")
     public String registerUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
-        user.setActive(false);
-        user.setRole("user");
         userService.saveUser(user);
         redirectAttributes.addFlashAttribute("message", "Utworzono nowego użytkownika. Poczekaj na aktywację przez Administratora...");
 

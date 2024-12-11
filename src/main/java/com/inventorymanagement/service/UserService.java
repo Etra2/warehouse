@@ -4,6 +4,7 @@ import com.inventorymanagement.model.User;
 import com.inventorymanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // Znajduje użytkownika na podstawie nazwy użytkownika
     public Optional<User> findByUsername(String username) {
@@ -22,6 +24,10 @@ public class UserService {
 
     // Zapisuje nowego użytkownika
     public User saveUser(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        user.setActive(false);
+        user.setRole("user");
         return userRepository.save(user);
     }
 }
